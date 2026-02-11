@@ -10,3 +10,7 @@ wheels/
 .venv
 *.sqlite3
 .env
+
+
+# Txt files
+history.txt

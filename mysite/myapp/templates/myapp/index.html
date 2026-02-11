@@ -36,5 +36,10 @@
     {% endif %}
 
     или <a href="{% url 'tests_page' %}">пройти отдельный тест</a>
+    <script>
+        access_token = "{{ request.session.jwt_access }}";
+        localStorage.setItem("jwtAccess", access_token);
+        console.log("Токен сохранен!");
+    </script>
 </body>
 </html>

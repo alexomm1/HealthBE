@@ -5,11 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Результаты</title>
+    <script src="{% static 'myapp/script.js' %}"></script>
 </head>
 <body>
     <h4>Результыты тестирований:</h4>
     <p>Access token: {{ request.session.jwt_access }}</p>
     {% if user.is_authenticated %}
+        <div id="test_form">
+            <h3>Сохранить результаты тестирования</h3>
+            <input type="number" id="test_id" placeholder="Id теста...">
+            <input type="number" id="testScore" placeholder="Результат...">
+            <button onclick="sendResult()">Отправить результаты</button>
+            <p id="status-message"></p>
+        </div>
         {% if results %}
         <table border="1">
             <tr>
