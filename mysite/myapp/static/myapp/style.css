@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.container a {
+    margin-right: 0;
+        text-decoration: none;
+    color: black;
+}
+
+.test-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.test-card{
+    text-decoration: none;
+    color: black;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    max-width: 40%;
+}
+
+.test-card:hover {
+    text-decoration: none;
+    color: black;
+    border: 2px solid #ddd;
+
+}
+
+.test-card:active {
+    text-decoration: none;
+    color: black;
+}
+
+.test-title{
+    text-decoration: none;
+}
+

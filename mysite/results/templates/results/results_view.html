@@ -1,0 +1,35 @@
+{% load static %}
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Результаты</title>
+</head>
+<body>
+    <h4>Результыты тестирований:</h4>
+    <p>Access token: {{ request.session.jwt_access }}</p>
+    {% if user.is_authenticated %}
+        {% if results %}
+        <table border="1">
+            <tr>
+                <th>Тест</th>
+                <th>Баллы</th>
+                <th>Дата</th>
+            </tr>
+            {% for r in results %}
+            <tr>
+                <td>{{ r.test_title }}</td>
+                <td>{{ r.score }}</td>
+                <td>{{ r.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>Нет результатов для пользователя</p>
+        {% endif %}
+    {% else %}
+        <p>Войжите для просмотра результатов!</p>
+    {% endif %}
+</body>
+</html>

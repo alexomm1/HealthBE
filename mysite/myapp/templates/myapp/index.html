@@ -1,0 +1,40 @@
+{% load static %}
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Main</title>
+    <link rel="stylesheet" href="{% static 'myapp/style.css'%}">
+</head>
+<body>
+    <div class="container">
+        {% if user.is_authenticated %}
+            <div>
+                <h3>Привет, {{ user.username }}!</h3>
+                <p>Email: {{ user.email }}</p>
+                <form action="/logout/" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Выйти</button>
+                </form>
+            </div>
+        {% else %}
+            <div>
+                <a href="{% url 'google_login' %}">Войти через Google</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <h4>Добро пожаловать в здоровье!</h4>
+    <h4>Мы заботимся о вашем благополучии</h4>
+    <p>Пройдите комплексную оценку, чтобы получить персональные рекомендации и начать заботится о себе уже сегодня.</p>
+
+    {% if user.is_authenticated %}
+        <button type="button" onclick="window.location.href='/test/'">Пройти комплексную оценку</button>
+    {% else %}
+        <button type="button" onclick="alert('Для прохождения теста необходимо авторизоваться!')">Пройти комплексную оценку</button>
+    {% endif %}
+
+    или <a href="{% url 'tests_page' %}">пройти отдельный тест</a>
+</body>
+</html>

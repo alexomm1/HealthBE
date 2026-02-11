@@ -1,0 +1,40 @@
+{% load static %}
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tests</title>
+    <link rel="stylesheet" href="{% static 'myapp/style.css'%}">
+
+</head>
+<body>
+    <h4>Тесты...</h4>
+    {% if user.is_authenticated %}
+        <div class="test-container">
+            <a href = "{% url 'test_result' %}">Просмотреть результаты тестирований</a>
+            <a href="#" class="test-card">
+                <h3 class = "test-title">Комплексная оценка здоровья</h3>
+                <p class = "test-description">Полная диагностика психологическкого состояния с персонализированными рекомендациями</p>
+            </a>
+            <a href="#" class="test-card">
+                <h3 class = "test-title">Уровень стресса</h3>
+                <p class = "test-description">Оценка уровня воспринимаемого стресса за последний месяц и понимание его влияния на
+        повседневную жизнь. Позволяет выявить необходимость изменений в образе жизни или обращения за поддержкой.</p>
+            </a>
+            <a href="#" class="test-card">
+                <h3 class = "test-title">Уровень тревоги</h3>
+                <p class = "test-description">Выявление признаков генерализованного тревожного расстройства, определение частоты тревоги и её влияния на качество жизНи.</p>
+            </a>
+            <a href="#" class="test-card">
+                <h3 class = "test-title">Психосоматика стресса</h3>
+                <p class = "test-description">Оценка наличия и выраженности соматических (телесных)
+        симптомов, связанных с психологическим состоянием.
+        Помогает выявить скрытые причины недомогания.</p>
+            </a>
+        </div>
+    {% else %}
+        <p>Войжите для просмотра тестов!</p>
+    {% endif %}
+</body>
+</html>
