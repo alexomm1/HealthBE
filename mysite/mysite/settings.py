@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+
+from django.conf.global_settings import AUTH_USER_MODEL
 from dotenv import load_dotenv
 
 
@@ -34,6 +36,7 @@ INSTALLED_APPS = [
     'myapp',
     'tests',
     'results',
+    'users',
     'social_django',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -126,6 +129,7 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/oauth/complete/google-oauth2/'
+AUTH_USER_MODEL = 'users.User'
 
 
 LOGIN_URL = '/auth/login/google-oauth2/'

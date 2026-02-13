@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from mysite import settings
 from tests.models import Test, Question, AnswerOption
 
 class TestResult(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

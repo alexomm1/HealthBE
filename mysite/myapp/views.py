@@ -2,7 +2,6 @@ import urllib.parse
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.contrib.auth import login
-from django.contrib.auth.models import User
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from mysite import settings
 import requests
+from users.models import User
+
 
 def home(request):
     return render(request, 'myapp/index.html')
