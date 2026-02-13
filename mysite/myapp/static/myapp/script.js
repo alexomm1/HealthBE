@@ -62,3 +62,6 @@ async function sendResult()
 }
 
 git remote set-url gitlab https://gitlab.com/alexommi/health.git
+
+
+    git remote set-url gitlab https://gitlab.com/health5155406/health.git
