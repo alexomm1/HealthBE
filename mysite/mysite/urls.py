@@ -10,6 +10,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('', include('myapp.urls')),
     path('', include('results.urls')),
+    path('', include('tests.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('logout/', csrf_exempt(LogoutView.as_view(next_page='/')), name='logout'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

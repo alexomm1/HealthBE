@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tests</title>
     <link rel="stylesheet" href="{% static 'myapp/style.css'%}">
-
+    <script src="{% static 'myapp/getAllTests.js' %}"></script>
 </head>
 <body>
     <h4>Тесты...</h4>
     {% if user.is_authenticated %}
+        <div id="tests-container"></div>
         <div class="test-container">
             <a href = "{% url 'test_result' %}">Просмотреть результаты тестирований</a>
             <a href="#" class="test-card">

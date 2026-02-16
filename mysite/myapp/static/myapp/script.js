@@ -31,7 +31,7 @@ async function sendResult()
     }
 
     const data = {
-        test_id: parseInt(test_id),
+        test: parseInt(test_id),
         score: parseInt(score),
         answers: {}
     }
@@ -60,4 +60,4 @@ async function sendResult()
         statusMsg.innerText = "Ошибка сети: " + error.message;
     }
 }
-
+//git remote set-url gitlab https://gitlab.com/health5155406/health.git
