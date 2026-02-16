@@ -13,4 +13,3 @@ class AnswerOption(models.Model):
     text = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
 
-

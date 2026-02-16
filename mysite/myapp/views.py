@@ -35,7 +35,7 @@ class GetJWTTokensView(APIView):
         })
 
 
-def google_login_redirect(request):
+def google_login_redirect():
     base_url = "https://accounts.google.com/o/oauth2/v2/auth"
 
     params = {
@@ -77,7 +77,6 @@ def google_login_callback(request):
     )
     user_info = user_res.json()
     google_email = user_info.get('email')
-    google_name = user_info.get('given_name', 'google_user')
 
     if not google_email:
         return HttpResponse("нету email", status=400)
@@ -94,6 +93,3 @@ def google_login_callback(request):
     request.session['jwt_refresh'] = str(refresh)
 
     return redirect('home')
-
-
-
