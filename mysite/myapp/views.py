@@ -94,6 +94,3 @@ def google_login_callback(request):
     request.session['jwt_refresh'] = str(refresh)
 
     return redirect('home')
-
-
-

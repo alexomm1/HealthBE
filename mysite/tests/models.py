@@ -14,3 +14,26 @@ class AnswerOption(models.Model):
     is_correct = models.BooleanField(default=False)
 
 
+# . Таблица Тестов (tests)
+# Хранит общую информацию о видах тестов.
+# id (PK)
+# name: "Шкала PSS 10", "Тест Бека" и т.д.
+# description: Описание теста.
+# 2. Таблица Факторов/Шкал (test_factors)
+# Здесь мы описываем, какие именно показатели есть у конкретного теста.
+# id (PK)
+# test_id (FK -> tests.id)
+# name: "Переживание стресса", "Контроль стресса", "Общий балл".
+# key: Технический идентификатор (например, stress_experience), чтобы бэкенду было проще сопоставлять данные с мобилки.
+# 3. Таблица Сессий Тестирования (test_sessions)
+# Запись о том, что конкретный пользователь прошел конкретный тест в определенное время.
+# id (PK)
+# user_id (FK -> users.id)
+# test_id (FK -> tests.id)
+# completed_at: Дата и время завершения.
+# 4. Таблица Результатов (test_results) — Самая важная
+# Здесь хранятся те самые числовые значения.
+# id (PK)
+# session_id (FK -> test_sessions.id)
+# factor_id (FK -> test_factors.id)
+# score: Numeric/Float (твое числовое значение).
