@@ -2,6 +2,8 @@ import requests
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from mysite import settings
+from tests.models import Results
+from tests.serializers import ResultsSerializer
 from .models import TestResult
 from .serializers import TestResultSerializer
 
@@ -18,9 +20,9 @@ def test_result(request):
         results = []
     return render(request, 'results/results_view.html', {"results": results})
 
-class TestResultViewSet(viewsets.ModelViewSet):
-    queryset = TestResult.objects.all()
-    serializer_class = TestResultSerializer
+class ResultsViewSet(viewsets.ModelViewSet):
+    queryset = Results.objects.all()
+    serializer_class = ResultsSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):

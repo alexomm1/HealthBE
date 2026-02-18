@@ -35,7 +35,7 @@ class GetJWTTokensView(APIView):
         })
 
 
-def google_login_redirect():
+def google_login_redirect(request):
     base_url = "https://accounts.google.com/o/oauth2/v2/auth"
 
     params = {
