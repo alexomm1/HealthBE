@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
-from tests.models import Test
-from tests.serializers import TestSerializer
+from tests.models import Test, TestResults
+from tests.serializers import TestSerializer, ResultsSerializer
 
 
 class TestViewSet(viewsets.ModelViewSet):
@@ -10,3 +10,8 @@ class TestViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user = self.request.user)
+
+
+class ResultsViewSet(viewsets.ModelViewSet):
+    queryset = TestResults.objects.all()
+    serializer_class = ResultsSerializer

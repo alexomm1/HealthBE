@@ -1,17 +1,5 @@
 from rest_framework import serializers
-from tests.models import Test, Question, AnswerOption, Factor, Results
-
-
-class AnswerOptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AnswerOption
-        fields = ['id', 'text']
-
-class QuestionSerializer(serializers.ModelSerializer):
-    answers = AnswerOptionSerializer(many=True, read_only=True)
-    class Meta:
-        model = Question
-        fields = ['id', 'text', 'answers']
+from tests.models import Test, Factor, TestResults
 
 
 class FactorSerializer(serializers.ModelSerializer):
@@ -30,5 +18,5 @@ class ResultsSerializer(serializers.ModelSerializer):
     test_title = serializers.CharField(source="factor.test.title", read_only=True)
     factor_name = serializers.CharField(source="factor.name", read_only=True)
     class Meta:
-        model = Results
+        model = TestResults
         fields = ['id', 'test_title', 'factor_name', 'user', 'score']
