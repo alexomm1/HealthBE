@@ -3,7 +3,6 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from mysite import settings
 from tests.models import TestResults
-from tests.serializers import ResultsSerializer
 
 def test_result(request):
     token = request.session.get('jwt_access', None)
@@ -28,3 +27,4 @@ def test_result(request):
 #
 #     def get_queryset(self):
 #         return self.queryset.filter(user = self.request.user)
+

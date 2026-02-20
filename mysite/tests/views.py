@@ -1,17 +1,23 @@
-from rest_framework import viewsets, permissions
-from tests.models import Test, TestResults
-from tests.serializers import TestSerializer, ResultsSerializer
+from rest_framework import status, generics
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from tests.models import TestAttempts
+from tests.serializers import TestSubmissionSerializer, TestAttemptDetailSerializer
 
 
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class SubmitTestView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
+    def post(self, request):
+        serializer = TestSubmissionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save_results(user=request.user)
+            return Response({"message": "Результаты успешно сохранены!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class MyTestAttemptView(generics.ListAPIView):
+    serializer_class = TestAttemptDetailSerializer
 
-class ResultsViewSet(viewsets.ModelViewSet):
-    queryset = TestResults.objects.all()
-    serializer_class = ResultsSerializer
+    def get_queryset(self):
+        return TestAttempts.objects.filter(user=self.request.user)

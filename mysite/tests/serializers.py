@@ -1,22 +1,46 @@
 from rest_framework import serializers
-from tests.models import Test, Factor, TestResults
+from tests.models import TestResults, TestAttempts
+
+class FactorResultSerializer(serializers.Serializer):
+    factor_id = serializers.IntegerField()
+    score = serializers.IntegerField()
+
+class TestSubmissionSerializer(serializers.Serializer):
+    test_id = serializers.IntegerField()
+    results = FactorResultSerializer(many=True)
+
+    def save_results(self, user):
+        test_id = self.validated_data['test_id']
+        results = self.validated_data['results']
+
+        attempt = TestAttempts.objects.create(user=user, test_id=test_id)
+
+        results_obj = [
+            TestResults(
+                user = user,
+                attempt=attempt,
+                factor_id = res['factor_id'],
+                score = res['score']
+            ) for res in results
+        ]
+
+        TestResults.objects.bulk_create(results_obj)
+
+        return attempt
 
 
-class FactorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Factor
-        fields = ['id', 'name', 'test']
-
-class TestSerializer(serializers.ModelSerializer):
-    questions = FactorSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Test
-        fields = ['id', 'title', 'description', 'questions']
-
-class ResultsSerializer(serializers.ModelSerializer):
-    test_title = serializers.CharField(source="factor.test.title", read_only=True)
-    factor_name = serializers.CharField(source="factor.name", read_only=True)
+class TestResultReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResults
-        fields = ['id', 'test_title', 'factor_name', 'user', 'score']
+        fields = ['factor_id', 'score']
+
+class TestAttemptDetailSerializer(serializers.ModelSerializer):
+    results = TestResultReadSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = TestAttempts
+        fields = ['id', 'test_id', 'user', 'completed_at', 'results']
+
+    def get_results(self, obj):
+        results = TestResults.objects.filter(user=obj.user)
+        return TestResultReadSerializer(results, many=True).data
