@@ -1,3 +1,5 @@
+from platform import release
+
 from django.db import models
 from users.models import User
 
@@ -10,23 +12,14 @@ class Factor(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="factor")
     name = models.CharField(max_length=200)
 
-class Results(models.Model):
+class TestAttempts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="attempts")
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="attempts")
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+class TestResults(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="results")
+    attempt = models.ForeignKey(TestAttempts, on_delete=models.CASCADE, related_name="results")
     factor = models.ForeignKey(Factor, on_delete=models.CASCADE, related_name="results")
     score = models.IntegerField(default=0)
-
-
-
-
-
-
-
-class Question(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="questions")
-    text = models.CharField(max_length=400)
-
-class AnswerOption(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="options")
-    text = models.CharField(max_length=200)
-    is_correct = models.BooleanField(default=False)
-
+    completed_at = models.DateTimeField(auto_now_add=True)
