@@ -9,6 +9,7 @@ from tests.serializers import TestSubmissionSerializer, TestAttemptDetailSeriali
 class SubmitTestView(APIView):
     permission_classes = [IsAuthenticated]
 
+<<<<<<< feature/86c83t13e-save-test-result
     def post(self, request):
         serializer = TestSubmissionSerializer(data=request.data)
         if serializer.is_valid():
@@ -30,3 +31,7 @@ class TestDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return TestAttempts.objects.filter(user=self.request.user)
+=======
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
+>>>>>>> develop
