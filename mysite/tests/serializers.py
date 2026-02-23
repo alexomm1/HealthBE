@@ -1,4 +1,4 @@
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from rest_framework import serializers
 from tests.models import TestResults, TestAttempts, Test
 

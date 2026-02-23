@@ -1,6 +1,4 @@
 from django.urls import path
-
-from tests.serializers import TestAttemptSerializer
 from tests.views import SubmitTestView, MyTestAttemptView, TestDetailView, AllAttemptsView, AttemptHistoryView
 
 urlpatterns = [

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Test, Question, AnswerOption, Factor, Results
+from .models import Test, Factor
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
@@ -8,21 +8,3 @@ class TestAdmin(admin.ModelAdmin):
 @admin.register(Factor)
 class FactorAdmin(admin.ModelAdmin):
     list_display = ['name']
-
-admin.site.register(Question)
-admin.site.register(AnswerOption)
-
-
-@admin.register(Results)
-class ResultsAdmin(admin.ModelAdmin):
-    list_display = ['user', 'get_test_title', 'get_factor_name', 'score']
-
-    list_select_related = ['factor', 'user']
-
-    @admin.display(description='Название фактора', ordering='factor__name')
-    def get_factor_name(self, obj):
-        return obj.factor.name
-
-    @admin.display(description="Название теста", ordering='test__title')
-    def get_test_title(self, obj):
-        return obj.factor.test.title
