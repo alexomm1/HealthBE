@@ -16,8 +16,17 @@ class SubmitTestView(APIView):
             return Response({"message": "Результаты успешно сохранены!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class MyTestAttemptView(generics.ListAPIView):
     serializer_class = TestAttemptDetailSerializer
+
+    def get_queryset(self):
+        return TestAttempts.objects.filter(user=self.request.user)
+
+
+class TestDetailView(generics.RetrieveAPIView):
+    serializer_class = TestAttemptDetailSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return TestAttempts.objects.filter(user=self.request.user)
