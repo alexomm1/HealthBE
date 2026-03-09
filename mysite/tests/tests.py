@@ -8,14 +8,12 @@ from users.models import User
 
 class TestViewsTestCase(APITestCase):
     def setUp(self):
-
         self.user = User.objects.create_user(username='test', email='', password='')
         self.other_user = User.objects.create_user(username='other', email='', password='')
 
         self.test_obj = Test.objects.create(title='Базовый тест', description='Описание теста')
         self.f1 = Factor.objects.create(test=self.test_obj, name='Фактор 1')
         self.f2 = Factor.objects.create(test=self.test_obj, name='Фактор 2')
-
 
         self.submit_url = reverse('submit_test')
         self.history_url = reverse('history')
@@ -171,8 +169,54 @@ class TestViewsTestCase(APITestCase):
         url = reverse('all_tests_stats')
         response = self.client.get(url)
 
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['attempts_count'], 1)
         self.assertEqual(float(response.data[0]['avg_score']), 0)
 
+    #история прохождения тестов
+    def test_recent_history_no_stats(self):
+        self.client.force_authenticate(user=self.user)
 
+        url = reverse('history')
+        response = self.client.get(url)
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def test_history_total_score(self):
+        self.client.force_authenticate(user=self.user)
+
+        att = TestAttempts.objects.create(user=self.user, test=self.test_obj)
+        TestResults.objects.create(user=self.user, attempt=att, factor=self.f1, score=10)
+        TestResults.objects.create(user=self.user, attempt=att, factor=self.f2, score=20)
+        TestResults.objects.create(user=self.user, attempt=att, factor=self.f1, score=15)
+
+        url = reverse('history')
+        response = self.client.get(url)
+
+        self.assertEqual(response.data[0]['result'], 45)
+
+    def test_recent_history_isolation(self):
+        att = TestAttempts.objects.create(user=self.user, test=self.test_obj)
+        TestResults.objects.create(user=self.user, attempt=att, factor=self.f1, score=10)
+
+        att_u2 = TestAttempts.objects.create(user=self.other_user, test=self.test_obj)
+        TestResults.objects.create(user=self.other_user, attempt=att_u2, factor=self.f1, score=20)
+        TestResults.objects.create(user=self.other_user, attempt=att_u2, factor=self.f2, score=15)
+
+        self.client.force_authenticate(user=self.user)
+        url = reverse('history')
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['result'], 10)
+
+    def test_check_history_limit(self):
+        for i in range(12):
+            TestAttempts.objects.create(user=self.user, test=self.test_obj)
+
+        self.client.force_authenticate(user=self.user)
+        url = reverse('history')
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.data), 10)

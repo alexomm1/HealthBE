@@ -110,16 +110,10 @@ class RecentHistoryView(APIView):
         for attempt in attempts:
             total_score = attempt.results.aggregate(Sum('score'))['score__sum'] or 0
 
-            general_factor_result = attempt.results.filter(
-                factor__is_general=True
-            ).first()
-
-            result_value = general_factor_result.score if general_factor_result else total_score
-
             data.append({
                 'data': attempt.completed_at,
                 'test_name': attempt.test.title,
-                'result': result_value
+                'result': total_score
             })
 
         return Response(data)
