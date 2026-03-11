@@ -16,27 +16,27 @@ class FactorResultSerializer(serializers.Serializer):
 class TestSubmissionSerializer(serializers.Serializer):
     test_id = serializers.IntegerField()
     results = FactorResultSerializer(many=True)
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-
-        test_id = self.validated_data['test_id']
-        results = self.validated_data['results']
-
-        attempt = TestAttempts.objects.create(user=user, test_id=test_id)
-
-        results_obj = [
-            TestResults(
-                user = user,
-                attempt=attempt,
-                factor_id = res['factor_id'],
-                score = res['score']
-            ) for res in results
-        ]
-
-        TestResults.objects.bulk_create(results_obj)
-
-        return attempt
+    #
+    # def create(self, validated_data):
+    #     user = self.context['request'].user
+    #
+    #     test_id = self.validated_data['test_id']
+    #     results = self.validated_data['results']
+    #
+    #     attempt = TestAttempts.objects.create(user=user, test_id=test_id)
+    #
+    #     results_obj = [
+    #         TestResults(
+    #             user = user,
+    #             attempt=attempt,
+    #             factor_id = res['factor_id'],
+    #             score = res['score']
+    #         ) for res in results
+    #     ]
+    #
+    #     TestResults.objects.bulk_create(results_obj)
+    #
+    #     return attempt
 
 #получение результатов
 

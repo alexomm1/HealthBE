@@ -22,6 +22,24 @@ class SubmitTestView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# class SubmitTestView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self, request):
+#         serializer = TestSubmissionSerializer(
+#             data=request.data,
+#             context={'request': request}
+#         )
+#
+#         if serializer.is_valid():
+#             attempt = create_test_submission(
+#                 user=request.user,
+#                 test_id=serializer.validated_data['test_id'],
+#                 results_data=serializer.validated_data['results']
+#             )
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 #норм получение результатов
 class ComplexStatsView(APIView):
     permission_classes = [IsAuthenticated]

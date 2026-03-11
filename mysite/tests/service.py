@@ -1,60 +1,18 @@
-def interpret_pss10():
-    distress_ids = [1, 2, 3, 6, 9 ,10]
-    cooping_ids = [4, 5, 7, 8]
+from tests.models import TestAttempts, TestResults
 
-    distress = sum(answers[q] for q in distress_ids)
-    cooping = sum([4 - answers[q]] if answers[q] in [0,1,3,4] else answers[q] for q in cooping_ids)
-    total = distress + cooping
 
-    if total <= 13:
-        return 'Низкий уровень стресса'
-    elif total <= 26:
-        return 'Средний уровень стресса'
-    else:
-        return 'Высокий уровень стресса'
+def create_test_submission(user, test_id: int, results_data: list):
+    attempt = TestAttempts.objects.create(user=user, test_id=test_id)
 
-def interpret_gad7():
-    total = distress + cooping
+    results_obj = [
+        TestResults.objects.create(
+            user=user,
+            attempt=attempt,
+            factor_id=res['factor_id'],
+            score=res['score']
+        )for res in results_data
+    ]
 
-    if total <= 13:
-        return 'Легкий уровень тревоги'
-    elif total <= 26:
-        return 'Умеренный уровень тревоги'
-    else:
-        return 'Высокий уровень тревоги'
+    TestResults.objects.bulk_create(results_obj)
 
-def interpret_phq15():
-    total = distress + cooping
-
-    if total <= 4:
-        return 'Минимальный уровень соматической нагрузки'
-    elif total <= 9:
-        return 'Низкий уровень соматической нагрузки'
-    elif total <= 14:
-        return 'Умеренный уровень соматической нагрузки'
-    else:
-        return 'Высокий уровень соматической нагрузки'
-
-def interpret_mbi():
-    total = distress + cooping
-
-    if total <= 4:
-        return 'Минимальный уровень соматической нагрузки'
-    elif total <= 9:
-        return 'Низкий уровень соматической нагрузки'
-    elif total <= 14:
-        return 'Умеренный уровень соматической нагрузки'
-    else:
-        return 'Высокий уровень соматической нагрузки'
-
-def interpret_hads():
-    total = distress + cooping
-
-    if total <= 4:
-        return 'Минимальный уровень соматической нагрузки'
-    elif total <= 9:
-        return 'Низкий уровень соматической нагрузки'
-    elif total <= 14:
-        return 'Умеренный уровень соматической нагрузки'
-    else:
-        return 'Высокий уровень соматической нагрузки'
+    return attempt
