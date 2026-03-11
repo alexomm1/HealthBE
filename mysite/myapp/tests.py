@@ -1,6 +1,4 @@
 from unittest.mock import patch
-
-from requests import session
 from rest_framework import status
 from users.models import User
 from django.urls import reverse
@@ -47,5 +45,26 @@ class TestAuthViewsTestCase(APITestCase):
         session = self.client.session
         self.assertIn('jwt_access', session)
 
+    @patch('requests.post')
+    def test_google_callback_token_error(self, mock_post):
+        mock_post.return_value.status_code = status.HTTP_400_BAD_REQUEST
+        mock_post.return_value.text = 'Invalid code'
 
+        response = self.client.get(self.callback_url, {'code': 'fake_code'})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('ошибка токена', response.content.decode('utf-8'))
+
+    @patch('requests.post')
+    @patch('requests.get')
+    def test_google_callback_no_email(self, mock_get, mock_post):
+        mock_post.return_value.status_code = status.HTTP_200_OK
+        mock_post.return_value.json.return_value = {'access_token': 'fake_token'}
+
+        mock_get.return_value.json.return_value = {'id': '123'}
+
+        response = self.client.get(self.callback_url, {'code': 'fake_code'})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('нету email', response.content.decode('utf-8'))
 
