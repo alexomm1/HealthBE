@@ -147,7 +147,7 @@ class TestViewsTestCase(APITestCase):
         self.assertEqual(response.data[0]['test_id'], self.test_obj.id)
 
     def test_all_test_stats_user_isolation(self):
-        for _ in range(5):
+        for i in range(5):
             att_U2 = TestAttempts.objects.create(user=self.other_user, test=self.test_obj)
             TestResults.objects.create(user=self.other_user, attempt=att_U2, factor=self.f1, score=10)
 

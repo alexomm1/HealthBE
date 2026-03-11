@@ -12,6 +12,7 @@ class FactorResultSerializer(serializers.Serializer):
             raise serializers.ValidationError('Результат не должен быть меньше 0!')
         return score
 
+
 class TestSubmissionSerializer(serializers.Serializer):
     test_id = serializers.IntegerField()
     results = FactorResultSerializer(many=True)
@@ -63,7 +64,6 @@ class AttemptDetailWithFactorSerializer(serializers.ModelSerializer):
 
     def get_total_score(self, obj):
         return obj.results.aggregate(Sum('score'))['score__sum'] or 0
-
 
 
 # #all down get
