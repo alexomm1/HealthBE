@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from tests.models import TestAttempts, Test, TestResults
 from tests.serializers import TestSubmissionSerializer, AttemptDetailWithFactorSerializer
+from tests.service import TestStatsService
+
 
 #отправка результатов
 class SubmitTestView(APIView):
@@ -45,44 +47,19 @@ class ComplexStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, test_id):
-        test = Test.objects.prefetch_related('attempts__results').get(id=test_id)
-        attempts = TestAttempts.objects.filter(test=test, user=request.user).prefetch_related('results')
+        stats_service = TestStatsService()
 
-        total_stats = attempts.aggregate(
-            attempts_count=Count('id', distinct=True),
-            avg_score=Avg('results__score'),
-            best_score=Max('results__score')
-        )
-
-        factor_stats = []
-        for factor in test.factor.all():
-            factor_results = TestResults.objects.filter(
-                factor=factor,
-                attempt__user=request.user
-            ).aggregate(
-                avg_score=Avg('score'),
-                max_score=Max('score'),
-                count=Count('id')
-            )
-            factor_stats.append({
-                'factor_id': factor.id,
-                'factor_name': factor.name,
-                'avg_score': factor_results['avg_score'] or 0,
-                'max_score': factor_results['max_score'] or 0,
-                'attempts_count_fac': factor_results['count'] or 0
-            })
-
-        recent_attempts = attempts.order_by('-completed_at')[:5]
+        stats = stats_service.get_full_test_stats(test_id, request.user.id)
 
         return Response({
-            'test_id': test.id,
-            'title': test.title,
-            'description': test.description,
-            'attempts_count': total_stats['attempts_count'],
-            'avg_score': total_stats['avg_score'],
-            'best_score': total_stats['best_score'],
-            'factor_stats': factor_stats,
-            'recent_attempts': AttemptDetailWithFactorSerializer(recent_attempts, many=True).data
+            'test_id': stats['test'].id,
+            'title': stats['test'].title,
+            'description': stats['test'].description,
+            'attempts_count': stats['total_stats']['attempts_count'],
+            'avg_score': stats['total_stats']['avg_score'],
+            'best_score': stats['total_stats']['best_score'],
+            'factor_stats': stats['factor_stats'],
+            'recent_attempts': AttemptDetailWithFactorSerializer(stats['recent_attempts'], many=True).data
         })
 
 
@@ -91,29 +68,32 @@ class AllTestStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        tests = Test.objects.all()
-        data = []
-
-        for test in tests:
-            attempts = TestAttempts.objects.filter(
-                test=test, user=request.user
-            )
-
-            if attempts.exists():
-                stats = attempts.aggregate(
-                    avg_score=Avg('results__score'),
-                    attempts_count=Count('id'),
-                    best_score=Max('results__score')
-                )
-                data.append({
-                    'test_id': test.id,
-                    'title': test.title,
-                    'attempts_count': stats['attempts_count'],
-                    'avg_score': stats['avg_score'] or 0,
-                    'best_score': stats['best_score'] or 0
-                })
-
+        data_service = TestStatsService()
+        data = data_service.get_full_test_stats(request.user.id)
         return Response(data)
+        # tests = Test.objects.all()
+        # data = []
+        #
+        # for test in tests:
+        #     attempts = TestAttempts.objects.filter(
+        #         test=test, user=request.user
+        #     )
+        #
+        #     if attempts.exists():
+        #         stats = attempts.aggregate(
+        #             avg_score=Avg('results__score'),
+        #             attempts_count=Count('id'),
+        #             best_score=Max('results__score')
+        #         )
+        #         data.append({
+        #             'test_id': test.id,
+        #             'title': test.title,
+        #             'attempts_count': stats['attempts_count'],
+        #             'avg_score': stats['avg_score'] or 0,
+        #             'best_score': stats['best_score'] or 0
+        #         })
+        #
+        # return Response(data)
 
 
 
@@ -123,7 +103,6 @@ class RecentHistoryView(APIView):
 
     def get(self, request):
         attempts = TestAttempts.objects.filter(user=self.request.user).select_related('test').prefetch_related('results').order_by('-completed_at')[:10]
-
         data = []
         for attempt in attempts:
             total_score = attempt.results.aggregate(Sum('score'))['score__sum'] or 0
