@@ -47,7 +47,6 @@ def google_login_redirect(request):
     }
 
     url = f"{base_url}?{urllib.parse.urlencode(params)}"
-    print(url)
     return redirect(url)
 
 

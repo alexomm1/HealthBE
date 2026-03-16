@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from mysite import settings
 import requests
 from users.models import User
