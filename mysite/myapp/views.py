@@ -7,11 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from myapp.service import google_auth
 from mysite import settings
-import requests
-from users.models import User
 
 
 def home(request):
@@ -57,7 +54,7 @@ def google_login_redirect(request):
 def google_login_callback(request):
     code = request.GET.get('code')
     if not code:
-        return HttpResponse("отсутствует код от гугла", status=400)
+        return HttpResponse("Отсутствует код", status=400)
 
     try:
         user = google_auth(code=code)

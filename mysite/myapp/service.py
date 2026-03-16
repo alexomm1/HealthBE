@@ -28,10 +28,10 @@ def google_auth(*, code):
     email = user_info.get('email')
 
     if not email:
-        return HttpResponse("нету email", status=400)
+        raise Exception(f"Отсутствует email")
 
     user, created = User.objects.get_or_create(
-        email=google_email,
+        email=email,
         defaults={'username': email.split('@')[0]}
     )
 

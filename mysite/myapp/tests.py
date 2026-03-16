@@ -47,13 +47,15 @@ class TestAuthViewsTestCase(APITestCase):
 
     @patch('requests.post')
     def test_google_callback_token_error(self, mock_post):
-        mock_post.return_value.status_code = status.HTTP_400_BAD_REQUEST
-        mock_post.return_value.text = 'Invalid code'
+        mock_response= mock_post.return_value
+        mock_response.ok = False
+        mock_response.status_code = status.HTTP_400_BAD_REQUEST
+        mock_response.text = 'Invalid code'
 
         response = self.client.get(self.callback_url, {'code': 'fake_code'})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('ошибка токена', response.content.decode('utf-8'))
+        self.assertIn('Google token error', response.content.decode('utf-8'))
 
     @patch('requests.post')
     @patch('requests.get')
@@ -66,5 +68,5 @@ class TestAuthViewsTestCase(APITestCase):
         response = self.client.get(self.callback_url, {'code': 'fake_code'})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('нету email', response.content.decode('utf-8'))
+        self.assertIn('Отсутствует email', response.content.decode('utf-8'))
 
