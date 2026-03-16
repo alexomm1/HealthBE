@@ -51,7 +51,7 @@ class AllTestStatsView(APIView):
 
     def get(self, request):
         data_service = TestStatsService()
-        data = data_service.get_full_test_stats(request.user.id)
+        data = data_service.get_all_tests_stats(request.user.id)
         return Response(data)
 
 

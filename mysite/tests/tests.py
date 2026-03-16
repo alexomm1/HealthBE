@@ -28,8 +28,8 @@ class TestViewsTestCase(APITestCase):
         data = {
             'test_id': self.test_obj.id,
             'results':[
-                {'factor_id': 1, 'score': 10},
-                {'factor_id': 2, 'score': 20}
+                {'factor_id': self.f1.id, 'score': 10},
+                {'factor_id': self.f2.id, 'score': 20}
             ]
         }
         response = self.client.post(self.submit_url, data=data, format='json')
@@ -48,7 +48,7 @@ class TestViewsTestCase(APITestCase):
         data = {
             'test_id': self.test_obj.id,
             'results': [
-                {'factor_id': 1, 'score': -12}
+                {'factor_id': self.f1.id, 'score': -12}
             ]
         }
 
@@ -87,7 +87,7 @@ class TestViewsTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(response.data['attempts_count'], 0)
-        self.assertEqual(response.data['avg_score'], 0 or None)
+        self.assertEqual(response.data['avg_score'], 0)
 
     def test_isolation_complex_stats(self):
         self.client.force_authenticate(user=self.other_user)
@@ -95,7 +95,7 @@ class TestViewsTestCase(APITestCase):
         response = self.client.get(self.stats_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['attempts_count'], 0)
-        self.assertEqual(response.data['avg_score'], 0 or None)
+        self.assertEqual(response.data['avg_score'], 0)
         self.assertEqual(len(response.data['factor_stats']), 2)
 
     def test_forbidden_complex_stats(self):

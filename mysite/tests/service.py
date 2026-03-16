@@ -12,7 +12,7 @@ def create_test_submission(user, test_id: int, results_data: list):
             attempt=attempt,
             factor_id=res['factor_id'],
             score=res['score']
-        )for res in results_data
+        ) for res in results_data
     ]
 
     TestResults.objects.bulk_create(results_obj)
@@ -21,6 +21,7 @@ def create_test_submission(user, test_id: int, results_data: list):
 
 
 class TestStatsService:
+
     def get_full_test_stats(self, test_id: int, user_id: int) -> Dict[str, Any]:
         test = self._get_test_with_relations(test_id)
         attempts = self._get_test_attempts(user_id, test_id)
@@ -39,10 +40,7 @@ class TestStatsService:
         tests = self._get_all_tests()
         data = self._get_test_data(tests, user_id)
 
-        return {
-            'tests': tests,
-            'data': data
-        }
+        return data
 
     def get_recent_history(self, user_id: int):
         attempts = TestAttempts.objects.filter(user_id=user_id).prefetch_related(
@@ -54,7 +52,7 @@ class TestStatsService:
             total_score = attempt.results.aggregate(Sum('score'))['score__sum'] or 0
 
             data.append({
-                'date': attempt.completed_at,  # было 'data', исправил на 'date'
+                'date': attempt.completed_at,
                 'test_name': attempt.test.title,
                 'result': total_score
             })
